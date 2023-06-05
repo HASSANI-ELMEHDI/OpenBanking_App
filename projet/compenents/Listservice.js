@@ -171,8 +171,6 @@ export default function renderFeatures() {
      
   }
       
-
-
     return (
         <View style={{ margin: 12 ,backgroundColor : "rgba(0, 0, 0, 0.07)",padding : 20,borderRadius: 10}}>
             <FlatList

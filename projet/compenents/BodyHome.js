@@ -7,6 +7,7 @@ import ListService from './Listservice';
 import RecentActivity from './RecentActivity';
 import { icons } from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Options from './Services/Recharge/Options';
 
 const windowHeight = Dimensions.get('window').height;
 export default function BodyHome() {
@@ -36,18 +37,7 @@ export default function BodyHome() {
            
           
         </View>
-        <View style={{padding :20}}>
-        <TouchableOpacity style={{
-          width :50,
-          height :50,
-          borderRadius :24,
-          backgroundColor :'#ffc700',
-          justifyContent : 'center',
-          alignItems : 'center'
-        }}>
-         <Icon name="plus" size={20} color="#FFFF" />
-      </TouchableOpacity>
-      </View>
+        <Options/>
       </View>
 
       <ListService/>

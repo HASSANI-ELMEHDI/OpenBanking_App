@@ -5,9 +5,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text, View } from 'react-native';
 // Screens
 import Home from './screens/Home';
-
 import Transactions from './screens/Transactions';
-import Parametres  from './screens/parametres';
+import Parametres  from './screens/Parametres';
 import Service from './compenents/Service';
 import Send from './compenents/Services/Send';
 import Accounts from './screens/Accounts';
@@ -20,16 +19,9 @@ const transactionsName = "Transactions";
 const parametresName = "Paramétres";
 const Tab = createBottomTabNavigator();
 
-function DetailsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Details!</Text>
-    </View>
-  );
-}
+
 function App() {
   return (
-    
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName={homeName}

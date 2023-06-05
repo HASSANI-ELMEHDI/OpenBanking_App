@@ -40,9 +40,8 @@ mongoose.connect(uri)
       }
     });
   
-  // Create a Mongoose model for the Person document
-  const bankAccount = mongoose.model('Accounts', bankAccountSchema);
- 
+// Create a Mongoose model for the Person document
+const bankAccount = mongoose.model('Accounts', bankAccountSchema);
 const plaidClient = new PlaidApi(configuration);
 const app = express();
 app.use(cors());
