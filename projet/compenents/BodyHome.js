@@ -8,9 +8,22 @@ import RecentActivity from './RecentActivity';
 import { icons } from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Options from './Services/Recharge/Options';
+import { useState,useEffect } from 'react';
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:8000';
 
 const windowHeight = Dimensions.get('window').height;
 export default function BodyHome() {
+ const [wallet,setwallet]=useState();
+  useEffect(() => {
+    async function fetch() {
+      const wall = await axios.post('/create-wallet', {
+        iso_currency_code: 'USD',
+      });
+    console.log('-------------------------------',wall);
+    }
+    fetch();
+  }, []);
   return (
     <ScrollView style={styles.root}>
 

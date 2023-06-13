@@ -1,6 +1,6 @@
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import BIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import BIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
     View,
@@ -11,12 +11,14 @@ import {
     Text,
     TouchableOpacity,
     Animated,
+    TouchableWithoutFeedback
   } from 'react-native';
   
 
 import React, { useState, useEffect } from 'react';
 //import {  icons } from "./../constants"
 import axios from 'axios';
+import RechargerParCompte from './RechargerParCompte';
 
 const ModalPoup = ({visible, children}) => {
     const [showModal, setShowModal] = React.useState(visible);
@@ -54,9 +56,43 @@ const ModalPoup = ({visible, children}) => {
   };
 export default function  Options (){
     const [visible, setVisible] = React.useState(false);
+
+
+    /// for the new feature ----------
+    const [modalVisible, setModalVisible] = useState(false);
+  
+    const handleTouchablePress = () => {
+      setModalVisible(true);
+      setVisible(false);
+    };
+  
+    const handleModalClose = () => {
+      setModalVisible(false);
+    };
     
     return (
         <View>
+        <Modal visible={modalVisible} onRequestClose={handleModalClose}>
+        <View style={{ flex: 1 ,backgroundColor : '#009dad'}}>
+              
+        <RechargerParCompte />
+              
+              <TouchableOpacity
+                style={{ position: 'absolute', top: 10, left: 10 }}
+                onPress={handleModalClose}
+              >
+                 <Icon name="arrow-left" color={'rgba(255, 255, 255, 0.9)'} size={25} />
+              </TouchableOpacity>
+            
+            <Text  style={{
+                 position: 'absolute', top: 10, left : 50,
+                lineHeight :30,
+                marginBottom: 8,
+                color :"rgba(255, 255, 255, 0.9)" ,
+                fontSize :24,
+              }}>Recharge d'e-Wallet par un compte externe lié </Text>
+            </View>
+      </Modal>
             <ModalPoup visible={visible}>
         <View style={{alignItems: 'center'}}>
           <View style={styles.header}>
@@ -85,7 +121,7 @@ export default function  Options (){
             </TouchableOpacity>
         </View>
         <View style={styles.bottomcontainer}>
-            <TouchableOpacity  style={{...styles.appButtonContainer,marginBottom : 20}}>
+            <TouchableOpacity onPress={handleTouchablePress} style={{...styles.appButtonContainer,marginBottom : 20}}>
               <Text style={styles.appButtonText}>UTLISER UN COMPTE LIÉ</Text>
             </TouchableOpacity>
         </View>

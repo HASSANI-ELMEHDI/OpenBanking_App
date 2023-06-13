@@ -22,6 +22,11 @@ mongoose.connect(uri)
   
   // Define a schema for the Person document
   const bankAccountSchema = new mongoose.Schema({
+    
+    accessToken: {
+      type: String,
+      required: true
+    },
       name: {
         type: String,
         required: true
@@ -37,7 +42,8 @@ mongoose.connect(uri)
       compte: {
         type: String,
         required: true
-      }
+      },
+      
     });
   
 // Create a Mongoose model for the Person document
@@ -117,7 +123,7 @@ app.post('/create_link_token', async function (request, response) {
         products: ['auth'],
         language: 'fr',
         redirect_uri: 'http://localhost:5173/',
-        country_codes: ['FR'],
+        country_codes: ['US'],
     };
     try {
         const createTokenResponse = await plaidClient.linkTokenCreate(plaidRequest);
@@ -168,7 +174,7 @@ app.get("/accounts", async (request, response) => {
   bankAccount.find({})
   .then(docs => {
     const resultArray = docs.map(doc => doc.toObject());
-    console.log(resultArray);
+    //console.log(resultArray);
     response.json(resultArray);
   })
   .catch(err => {
@@ -184,6 +190,7 @@ app.post("/insert", async function(request, response) {
   
   try {
     const a = new bankAccount({
+      accessToken : request.body.accessToken,
       name : request.body.name,
       balance : request.body.balance,
       iso_currency_code :request.body.iso_currency_code,
@@ -202,6 +209,74 @@ app.post("/insert", async function(request, response) {
   
   } catch (e) {
       response.status(500).send("failed");
+  }
+});
+
+
+app.post('/identity', async (req, res) => {
+  const { access_token } = req.body;
+  if (!access_token) {
+    return res.status(400).send('Missing access token');
+  }
+  const request = {
+    access_token,
+  };
+  try {
+    const response = await plaidClient.identityGet(request);
+    const identities = response.data.accounts.flatMap((account) => account.owners);
+    res.send(identities);
+  } catch (error) {
+    res.status(500).send('Error retrieving identity data');
+  }
+});
+
+app.post('/accountsforinstitution', async (req, res) => {
+  const { access_token } = req.body;
+  const request = {
+    access_token,
+  };
+  try {
+    const response = await plaidClient.accountsGet(request);
+    const accounts = response.data.accounts;
+    res.json(accounts);
+  } catch (error) {
+    // handle error
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/institution/:id', async (req, res) => {
+  const institutionID = req.params.id;
+  const request = {
+    institution_id: institutionID,
+    country_codes: ['US'],
+  };
+  
+  try {
+    const response = await plaidClient.institutionsGetById(request);
+    const institution = response.data.institution;
+    res.json(institution);
+  } catch (error) {
+    // Handle error
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/create-wallet', async (req, res) => {
+  const { iso_currency_code } = req.body;
+  const request = {
+    iso_currency_code: iso_currency_code,
+  };
+  try {
+    const response = await plaidClient.walletCreate(request);
+    const walletID = response.data.wallet_id;
+    const balance = response.data.balance;
+    const numbers = response.data.numbers;
+    const recipientID = response.data.recipient_id;
+    res.status(200).json({ walletID, balance, numbers, recipientID });
+  } catch (error) {
+    // handle error
+    res.status(500).json({ error: error.message });
   }
 });
 

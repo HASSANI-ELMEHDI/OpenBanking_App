@@ -28,10 +28,11 @@ function PlaidAuth({publicToken,metadataf}) {
       const curr=auth.data.accounts[0].balances.iso_currency_code;
       const compte=auth.data.numbers.ach[0].account;
       const ins = await axios.post('/insert', {
+        accessToken : accessToken.data.accessToken, 
         name :name  ,
         balance : balance,
         iso_currency_code :curr,
-        compte : compte
+        compte : compte,
     });
      
     }
@@ -52,7 +53,9 @@ const Accounts = () => {
   const [linkToken, setLinkToken] = useState();
   const [publicToken, setPublicToken] = useState();
   const [metadatai, setmetadata] = useState("Inconnu");
+ 
   const [accountsData, setAccountsData] = useState([]);
+  const [access_Tok, setAccess_Tok] = useState();
 
   useEffect(() => {
     async function fetchLinkToken() {
@@ -78,9 +81,10 @@ const Accounts = () => {
     onSuccess: async (public_token, metadata) => {
       setPublicToken(public_token);
       setmetadata(metadata.institution.name);
-      console.log('success', public_token, metadata);
-
+      
       const response = await axios.post('/exchange_public_token', { public_token });
+      setAccess_Tok(response.data.accessToken);
+      //console.log('<<<<<<<<<<<<<<<<<<<<<<><><>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<',response.data.accessToken)
       setAccountsData(response.data.accounts);
     },
   };
@@ -88,10 +92,10 @@ const Accounts = () => {
   const {open, ready} = usePlaidLink(config);
 
   return publicToken ? (
-    <PlaidAuth publicToken={publicToken} metadataf={metadatai} accountsData={accountsData} />
+    <PlaidAuth publicToken={publicToken} metadataf={metadatai} accountsData={accountsData}  />
   ) : (
     <View>
-      <Linkedaccounts accountsData={accountsData} />
+      <Linkedaccounts accountsData={accountsData} access_token={access_Tok}/>
       <Button  
         title="Connect a bank account"
         onPress={() => open()}
